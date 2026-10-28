@@ -19,7 +19,7 @@
   ],
   "repetitions": 3,
   "timeoutSeconds": 900.0,
-  "questionFile": "C:\\Users\\ZHAO\\Desktop\\paper\\manufacturing_mcp_server\\experiments\\comparison_questions.jsonl",
+  "questionFile": "../comparison_questions.jsonl",
   "questionIds": [
     "E01",
     "E02",
