@@ -1,0 +1,1620 @@
+{
+  "schemaVersion": 7,
+  "runId": "run_20261018_120547",
+  "createdAt": "2026-10-18T04:05:47.661651+00:00",
+  "updatedAt": "2026-10-18T04:05:47.661661+00:00",
+  "model": "deepseek-chat",
+  "baseUrl": "https://api.deepseek.com",
+  "temperature": 0.0,
+  "mode": "all",
+  "groups": [
+    "baseline",
+    "context_baseline",
+    "agent"
+  ],
+  "requestedGroupsThisInvocation": [
+    "baseline",
+    "context_baseline",
+    "agent"
+  ],
+  "repetitions": 3,
+  "timeoutSeconds": 900.0,
+  "questionFile": "C:\\Users\\ZHAO\\Desktop\\paper\\manufacturing_mcp_server\\experiments\\comparison_questions.jsonl",
+  "questionIds": [
+    "E01",
+    "E02",
+    "E03",
+    "E04",
+    "E05",
+    "E06",
+    "E07",
+    "E08",
+    "I01",
+    "I02",
+    "I03",
+    "I04",
+    "I05",
+    "I06",
+    "I07",
+    "I08",
+    "H01",
+    "H02",
+    "H03",
+    "H04",
+    "H05",
+    "H06",
+    "H07",
+    "H08"
+  ],
+  "seed": 20261010,
+  "commonSystemPrompt": "你是一名制造业研究与数据分析助手。\n请直接回答用户问题，给出清晰结论、关键依据、数据时间范围、假设和不确定性。\n涉及数字、政策、标准或最新行业信息时，不得编造来源。\n如果系统提供了工具，可以使用工具获取证据；如果没有工具，应明确说明知识时效性和数据限制。\n如果工具可用且指标名称不确定，先调用 list_metric_definitions 查询语义层支持的规范名称，不能猜测指标标识符。\n调用外部检索时，中文检索使用 language=zh-cn。country 只能与 topic=general 组合；topic=news 时必须省略 country。供应商特有参数由MCP适配器转换，不要自行猜测。\n外部检索规范工具名只有 search_external_sources、retrieve_external_evidence、fetch_external_document 和 cross_check_external_sources；优先使用 retrieve_external_evidence。retrieve_external_sources 仅为兼容别名，不应在新调用中使用。\nfetch_external_document 只能原样使用工具检索结果中实际返回的公开 HTTP/HTTPS URL，不得自行拼接或猜测URL；严禁传入 file:// URL、本机路径、沙箱路径或导出文件路径。沙箱报告和图表应直接使用沙箱工具返回的 hostPath/export 路径，不得交给外部网页工具读取。\nlist_metric_definitions 只用于内部制造指标语义解析；external 类纯外部调研任务禁止调用它。\n优先使用最少且充分的工具调用，避免同义重复检索；累计完成4次外部检索/读取后必须停止外部工具并基于已有证据作答，缺少官方资料时明确说明局限。工具报错后应修正参数，不能把失败调用当作有效证据。\n复杂内部或混合分析优先选择高层综合工具：设备综合分析使用 analyze_machine_360；多设备月度生产、质量、停机、OEE和能耗对比使用 compare_machine_monthly_performance；供应商质量、交付与库存缺料联动使用 analyze_supplier_inventory_risk；单台设备根因候选使用 rank_root_cause_candidates，多台设备使用 rank_machine_root_causes_batch；维护筛查使用 predict_maintenance_risk；全局风险使用 get_manufacturing_overview 或 find_cross_domain_risks；设备×时间的能耗、峰值功率、运行时间、产量、良品数和单位良品能耗分析使用 analyze_energy_production_efficiency。高层工具已经返回所需证据后，不要再用通用问答或沙箱重复计算同一指标。\n使用 analyze_supplier_inventory_risk 时，采购金额最高者必须以 rankings.highest_purchase_spend_supplier 为准，不要根据风险排序猜测金额排序，也不要同时把多个供应商写成“最高”或“最大”。\n当问题同时要求物料覆盖天数、无消耗/积压和供应商依赖时，analyze_supplier_inventory_risk 用于供应商依赖，find_inventory_exceptions 用于物料级低覆盖、过剩覆盖和无消耗异常；两者不能互相替代。\n用户未指定时间范围时，不得自行猜测年份并传入dateFrom/dateTo；优先使用高层工具的默认全量范围。若自行添加的日期导致0行或数据不足，应去掉日期范围安全重试一次，并在最终答案中采用工具返回的实际数据范围。\nI01设备综合风险使用 analyze_machine_360 的默认六项阈值触发公式：报废率>3%、质量失败率>10%、非计划停机>600分钟、可用率<90%、OEE<85%、单位运行小时能耗>25 kWh，每项触发计1分；按风险分数降序，同分按 machine_id 升序作为规范顺序，但验收允许同分设备互换。最终回答须说明风险分数或触发项。\nI01调用 analyze_machine_360 后不得再调用语义重复的 find_cross_domain_risks；需要解释前三台设备的原因时，调用一次 rank_machine_root_causes_batch，不得逐台调用 rank_root_cause_candidates。\n根因候选分析必须单独说明 rank_root_cause_candidates 返回的 productionPaceEvidence：至少报告实际加权循环时间、标准节拍、节拍指数，并明确它支持还是反对“生产节拍异常”假设；不能因未发现明显变慢而省略该维度。\n不要把 get_dataset_info、list_tables、describe_table 当成固定前置步骤；已知实体和高层工具输入足够时直接分析。不得以相同参数重复调用同一工具。外部检索先做一次覆盖面充分的检索，仅在存在明确证据缺口时追加不同查询；当已有至少3个独立域名、题目要求的官方来源以及支持关键结论的证据时立即停止检索，不得为了增加来源数量或提高“来源利用率”继续搜索。fetch_external_document 只用于法规原文或搜索摘要无法回答的关键缺口。沙箱仅用于图表、文件交付或高层工具不能完成的计算。\n当任务要求按设备汇总实际产量、合格数量、报废数量、报废率并生成图表和Markdown报告时，直接调用一次 run_natural_language_sandbox_analysis，并在问题参数中明确来源表 production_orders；不要先调用数据集、表清单、表结构或指标目录工具，也不要为读取已返回的报告再次调用沙箱。\n内部数据与外部公开资料必须明确区分。\n外部或混合任务中，每个包含关键数字、政策、标准、实施时间或最新行业结论的段落，都必须在支持该结论的句子后就近附上至少一个HTTP/HTTPS来源链接。只在文末集中列“参考来源”、只写机构名称，均不能替代行内引用。只能优先引用本次工具返回或系统给定证据中的URL，不得补写未实际取得的链接，也不得声称已核对却不在最终回答中给出链接。\n当题目明确要求设备厂商、专利/论文、维修资料等多种来源类别时，必须逐类取得至少一个真正支持结论的URL；仅提及类别、引用无关目录页或声明该类别缺失，不算完成该来源要求。\n内部或混合任务中，最终回答应说明使用的工具、来源表、数据时间范围和查询摘要哈希（如工具返回）；不得编造未出现在工具证据中的来源表。\n当问题要求比较各设备各月份的能耗、峰值功率、运行时间、产量、良品数量和单位良品能耗时，最终回答必须输出完整的“设备×月份”Markdown明细表；每行至少包含设备、月份、能耗kWh、峰值功率kW、运行时间h、实际产量、良品数量、单位良品能耗kWh/件，不得只展示汇总表或单位能耗透视表。\n混合任务中，每个内部数值表格或连续的内部数值结论后，应就近标注“内部证据：来源表 <表名>；查询摘要 <哈希>”。外部结论使用网页URL，内部结论使用来源表和查询摘要，两者不得混用。\n最终文字中的最大、最小、最快、最慢和数值区间必须与所列明细表逐项一致；“相对标准偏离最大”不得改写成“绝对最慢”。\n不要把相关性描述成已经证明的因果关系。\n",
+  "baselineSystemPrompt": "你是一名制造业研究与数据分析助手，正在参加传统API闭卷基线实验。\n当前对话没有任何工具、插件、数据库、文件、外部检索或实时联网能力。你必须直接生成最终自然语言答案。\n禁止输出工具调用、函数调用、XML、DSML、JSON调用参数或“我将先调用/检索/查询”等过程性占位文本；不得假装已经访问任何工具或数据源。\n请根据模型已有知识尽可能回答，并明确区分已知信息、推断和无法核验的信息。\n涉及最新数字、政策、标准或行业动态时，必须说明知识时效和无法实时核验的限制；不得编造来源、URL或精确数据。\n涉及用户本地制造数据时，必须明确说明无法访问本地数据库，不得虚构设备、工单、指标或分析结果；可以说明完成分析所需的数据和方法。\n请给出清晰结论、关键依据、数据时间范围、假设和不确定性。不要把相关性描述成已经证明的因果关系。\n即使信息不足，也应直接提供当前可完成的有用回答，而不是尝试调用不存在的能力。\n",
+  "contextBaselineSystemPrompt": "你是一名制造业研究与数据分析助手。\n请直接回答用户问题，给出清晰结论、关键依据、数据时间范围、假设和不确定性。\n涉及数字、政策、标准或最新行业信息时，不得编造来源。\n如果系统提供了工具，可以使用工具获取证据；如果没有工具，应明确说明知识时效性和数据限制。\n如果工具可用且指标名称不确定，先调用 list_metric_definitions 查询语义层支持的规范名称，不能猜测指标标识符。\n调用外部检索时，中文检索使用 language=zh-cn。country 只能与 topic=general 组合；topic=news 时必须省略 country。供应商特有参数由MCP适配器转换，不要自行猜测。\n外部检索规范工具名只有 search_external_sources、retrieve_external_evidence、fetch_external_document 和 cross_check_external_sources；优先使用 retrieve_external_evidence。retrieve_external_sources 仅为兼容别名，不应在新调用中使用。\nfetch_external_document 只能原样使用工具检索结果中实际返回的公开 HTTP/HTTPS URL，不得自行拼接或猜测URL；严禁传入 file:// URL、本机路径、沙箱路径或导出文件路径。沙箱报告和图表应直接使用沙箱工具返回的 hostPath/export 路径，不得交给外部网页工具读取。\nlist_metric_definitions 只用于内部制造指标语义解析；external 类纯外部调研任务禁止调用它。\n优先使用最少且充分的工具调用，避免同义重复检索；累计完成4次外部检索/读取后必须停止外部工具并基于已有证据作答，缺少官方资料时明确说明局限。工具报错后应修正参数，不能把失败调用当作有效证据。\n复杂内部或混合分析优先选择高层综合工具：设备综合分析使用 analyze_machine_360；多设备月度生产、质量、停机、OEE和能耗对比使用 compare_machine_monthly_performance；供应商质量、交付与库存缺料联动使用 analyze_supplier_inventory_risk；单台设备根因候选使用 rank_root_cause_candidates，多台设备使用 rank_machine_root_causes_batch；维护筛查使用 predict_maintenance_risk；全局风险使用 get_manufacturing_overview 或 find_cross_domain_risks；设备×时间的能耗、峰值功率、运行时间、产量、良品数和单位良品能耗分析使用 analyze_energy_production_efficiency。高层工具已经返回所需证据后，不要再用通用问答或沙箱重复计算同一指标。\n使用 analyze_supplier_inventory_risk 时，采购金额最高者必须以 rankings.highest_purchase_spend_supplier 为准，不要根据风险排序猜测金额排序，也不要同时把多个供应商写成“最高”或“最大”。\n当问题同时要求物料覆盖天数、无消耗/积压和供应商依赖时，analyze_supplier_inventory_risk 用于供应商依赖，find_inventory_exceptions 用于物料级低覆盖、过剩覆盖和无消耗异常；两者不能互相替代。\n用户未指定时间范围时，不得自行猜测年份并传入dateFrom/dateTo；优先使用高层工具的默认全量范围。若自行添加的日期导致0行或数据不足，应去掉日期范围安全重试一次，并在最终答案中采用工具返回的实际数据范围。\nI01设备综合风险使用 analyze_machine_360 的默认六项阈值触发公式：报废率>3%、质量失败率>10%、非计划停机>600分钟、可用率<90%、OEE<85%、单位运行小时能耗>25 kWh，每项触发计1分；按风险分数降序，同分按 machine_id 升序作为规范顺序，但验收允许同分设备互换。最终回答须说明风险分数或触发项。\nI01调用 analyze_machine_360 后不得再调用语义重复的 find_cross_domain_risks；需要解释前三台设备的原因时，调用一次 rank_machine_root_causes_batch，不得逐台调用 rank_root_cause_candidates。\n根因候选分析必须单独说明 rank_root_cause_candidates 返回的 productionPaceEvidence：至少报告实际加权循环时间、标准节拍、节拍指数，并明确它支持还是反对“生产节拍异常”假设；不能因未发现明显变慢而省略该维度。\n不要把 get_dataset_info、list_tables、describe_table 当成固定前置步骤；已知实体和高层工具输入足够时直接分析。不得以相同参数重复调用同一工具。外部检索先做一次覆盖面充分的检索，仅在存在明确证据缺口时追加不同查询；当已有至少3个独立域名、题目要求的官方来源以及支持关键结论的证据时立即停止检索，不得为了增加来源数量或提高“来源利用率”继续搜索。fetch_external_document 只用于法规原文或搜索摘要无法回答的关键缺口。沙箱仅用于图表、文件交付或高层工具不能完成的计算。\n当任务要求按设备汇总实际产量、合格数量、报废数量、报废率并生成图表和Markdown报告时，直接调用一次 run_natural_language_sandbox_analysis，并在问题参数中明确来源表 production_orders；不要先调用数据集、表清单、表结构或指标目录工具，也不要为读取已返回的报告再次调用沙箱。\n内部数据与外部公开资料必须明确区分。\n外部或混合任务中，每个包含关键数字、政策、标准、实施时间或最新行业结论的段落，都必须在支持该结论的句子后就近附上至少一个HTTP/HTTPS来源链接。只在文末集中列“参考来源”、只写机构名称，均不能替代行内引用。只能优先引用本次工具返回或系统给定证据中的URL，不得补写未实际取得的链接，也不得声称已核对却不在最终回答中给出链接。\n当题目明确要求设备厂商、专利/论文、维修资料等多种来源类别时，必须逐类取得至少一个真正支持结论的URL；仅提及类别、引用无关目录页或声明该类别缺失，不算完成该来源要求。\n内部或混合任务中，最终回答应说明使用的工具、来源表、数据时间范围和查询摘要哈希（如工具返回）；不得编造未出现在工具证据中的来源表。\n当问题要求比较各设备各月份的能耗、峰值功率、运行时间、产量、良品数量和单位良品能耗时，最终回答必须输出完整的“设备×月份”Markdown明细表；每行至少包含设备、月份、能耗kWh、峰值功率kW、运行时间h、实际产量、良品数量、单位良品能耗kWh/件，不得只展示汇总表或单位能耗透视表。\n混合任务中，每个内部数值表格或连续的内部数值结论后，应就近标注“内部证据：来源表 <表名>；查询摘要 <哈希>”。外部结论使用网页URL，内部结论使用来源表和查询摘要，两者不得混用。\n最终文字中的最大、最小、最快、最慢和数值区间必须与所列明细表逐项一致；“相对标准偏离最大”不得改写成“绝对最慢”。\n不要把相关性描述成已经证明的因果关系。\n\n你正在参加固定上下文对照实验。用户消息中会附上由预定义只读流程事先收集的证据。\n你不能调用任何工具，也不能要求系统追加检索。只能使用给定证据和自身知识作答；证据不足时必须明确说明。\n不得声称证据是你自主检索或调用工具得到的。引用内部数据与外部公开资料时必须明确区分。\n",
+  "baselinePromptIsolation": "闭卷基线不接收任何工具名称或工具使用指令；检测到伪工具调用标记时执行一次无工具重答。",
+  "baselineHasTools": false,
+  "contextBaselineModelHasTools": false,
+  "contextBaselineCollection": "按题号和题型执行预先固定的只读MCP证据收集计划，再进行一次普通API回答",
+  "contextBaselinePlanVersion": 3,
+  "contextBaselineMaxCharacters": 40000,
+  "contextBaselinePlans": {
+    "E01": [
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "中国新能源汽车 产销量 渗透率 出口 动力电池 政策 最新 官方数据",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "includeDomains": [
+            "caam.org.cn",
+            "cpcaauto.com",
+            "customs.gov.cn",
+            "miit.gov.cn",
+            "gov.cn",
+            "mof.gov.cn",
+            "chinatax.gov.cn"
+          ],
+          "candidateCount": 12,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      },
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "中国新能源汽车 现状 趋势 出口 动力电池 快充 固态电池 行业分析",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "E02": [
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "调研当前磷酸铁锂、三元锂、钠离子电池和固态电池的产业化进展。区分实验室成果、中试、装车验证和规模量产，比较能量密度、成本、安全性和供应链风险，至少引用3个可靠来源。",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "E03": [
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "EU Battery Regulation 2023/1542 battery passport carbon footprint due diligence recycled content implementation dates",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "en",
+          "includeDomains": [
+            "eur-lex.europa.eu",
+            "single-market-economy.ec.europa.eu"
+          ],
+          "candidateCount": 8,
+          "topK": 5,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      },
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "欧盟电池法规 电池护照 碳足迹 尽职调查 再生材料 实施时间 中国企业 合规",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 8,
+          "topK": 6,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "E04": [
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "调研人形机器人在汽车和电子制造工厂中的最新应用现状。至少选择3个公开案例，区分宣传展示、现场试验、小批量部署和规模化应用，并判断目前是否已经具备明确的商业回报。",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "E05": [
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "调研当前制造业预测性维护的主流技术路线，比较振动、温度、电流、声学和多模态方法。说明哪些方案已经成熟应用，哪些仍有较高实施门槛，并结合标准、论文或设备厂商资料进行多来源核对。",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "E06": [
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "调研数控机床主轴出现异常噪声时的可靠排查方法。至少使用设备厂商资料、专利或论文、维修技术资料三类来源，形成按安全停机、外观检查、振动分析、温度检查和拆检决策排列的步骤，并指出哪些操作必须由专业人员完成。",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "E07": [
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "调研欧盟碳边境调节机制的最新实施状态，分析它对中国钢铁、铝材及汽车零部件制造企业的直接和间接影响。区分已经生效的要求与未来计划，附官方来源并核对至少两个行业解读。",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "E08": [
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "比较OPC UA、MQTT和MQTT Sparkplug在制造业设备数据采集中的适用场景。结合当前标准和工业实践，从实时性、语义建模、边缘部署、安全性和系统集成成本进行比较，最后给出不同工厂规模下的选型建议。",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "I01": [
+      {
+        "tool": "analyze_machine_360",
+        "args": {}
+      },
+      {
+        "tool": "predict_maintenance_risk",
+        "args": {
+          "horizonDays": 30,
+          "limit": 100
+        }
+      }
+    ],
+    "I02": [
+      {
+        "tool": "compare_machine_monthly_performance",
+        "args": {
+          "machineIds": [
+            "M03",
+            "M07"
+          ],
+          "grain": "month",
+          "limit": 500
+        }
+      }
+    ],
+    "I03": [
+      {
+        "tool": "analyze_machine_360",
+        "args": {}
+      },
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "报废率最高设备的根因候选有哪些？",
+          "includeData": true
+        }
+      }
+    ],
+    "I04": [
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "哪些供应商综合风险最高？",
+          "includeData": true
+        }
+      },
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "哪些库存物料存在缺料风险？",
+          "includeData": true
+        }
+      }
+    ],
+    "I05": [
+      {
+        "tool": "analyze_energy_production_efficiency",
+        "args": {
+          "grain": "month",
+          "limit": 500
+        }
+      }
+    ],
+    "I06": [
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "哪些产品综合风险最高？",
+          "includeData": true
+        }
+      },
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "工厂当前生产质量库存综合风险是什么？",
+          "includeData": true
+        }
+      }
+    ],
+    "I07": [
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "当前生产质量设备能耗有哪些综合异常？",
+          "includeData": true
+        }
+      }
+    ],
+    "I08": [
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "按设备汇总实际产量、良品数量、报废数量和报废率。",
+          "includeData": true
+        }
+      }
+    ],
+    "H01": [
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "当前综合风险最高的设备有哪些？",
+          "includeData": true
+        }
+      },
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "哪些设备维护风险最高？",
+          "includeData": true
+        }
+      },
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "数控机床高报废 停机 维护风险 故障诊断",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "H02": [
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "M07设备综合情况怎么样？",
+          "includeData": true
+        }
+      },
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "M07有哪些质量、报废和停机异常？",
+          "includeData": true
+        }
+      },
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "数控机床异常噪声 报废 停机 故障诊断 排查",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "H03": [
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "最严重的质量缺陷类型和相关设备是什么？",
+          "includeData": true
+        }
+      },
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "ASQ 8D problem solving D3 containment D4 root cause D5 corrective action IATF 16949 质量改进",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "H04": [
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "哪些设备或月份能源效率最低？",
+          "includeData": true
+        }
+      },
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "ISO 50001 制造业 单位产品能耗 改善 测量",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "H05": [
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "哪些设备维护风险最高？",
+          "includeData": true
+        }
+      },
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "高风险设备有哪些停机和能耗异常？",
+          "includeData": true
+        }
+      },
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "数控机床预测性维护 振动 温度 电流 传感器 报警",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "H06": [
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "哪些供应商的质量和交付风险最高？",
+          "includeData": true
+        }
+      },
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "制造业供应商质量 交付风险 审核 供应链风险",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "H07": [
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "哪些库存物料存在缺料、积压或供应商依赖风险？",
+          "includeData": true
+        }
+      },
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "制造业库存缺料 积压 单一供应商 供应链风险",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ],
+    "H08": [
+      {
+        "tool": "ask_manufacturing_question",
+        "args": {
+          "question": "工厂当前生产质量设备能耗供应商库存的主要风险是什么？",
+          "includeData": true
+        }
+      },
+      {
+        "tool": "retrieve_external_evidence",
+        "args": {
+          "query": "新能源汽车 智能制造 最新发展趋势 工厂机会 风险",
+          "topic": "general",
+          "searchDepth": "advanced",
+          "language": "zh-cn",
+          "candidateCount": 10,
+          "topK": 8,
+          "semanticRerank": true,
+          "safeSearch": true
+        }
+      }
+    ]
+  },
+  "taskContractVersion": 6,
+  "evidenceAuditVersion": 8,
+  "i01RiskRankingPolicy": {
+    "formula": {
+      "scrap_rate_above": 0.03,
+      "quality_fail_rate_above": 0.1,
+      "unplanned_downtime_min_above": 600,
+      "availability_below": 0.9,
+      "oee_below": 0.85,
+      "kwh_per_runtime_hour_above": 25,
+      "points_per_trigger": 1
+    },
+    "allowedTop3Orders": [
+      [
+        "M03",
+        "M07",
+        "M08"
+      ],
+      [
+        "M07",
+        "M03",
+        "M08"
+      ]
+    ],
+    "tiePolicy": "风险分数降序；同分以 machine_id 升序为规范顺序，验收允许同分设备互换。"
+  },
+  "evidenceClaimBindingMinimum": {
+    "external": 0.75,
+    "internal": 0.75
+  },
+  "numericSelfCorrection": "三组使用相同规则；仅对数值合计和公式验收错误自动修订一次，不增加工具或证据",
+  "evidenceFormatCorrection": "三组使用相同规则；仅复制或移动回答和工具证据中已有的URL、来源表及查询摘要，不获取或创造新证据",
+  "efficiencyAuditVersion": 5,
+  "efficiencyPolicy": "优先按证据充分性停止；明确要求来源类别时按厂商、论文/专利、维修资料逐类检索并在全部覆盖后停止；普通设备资料达到6个URL和3个域名后停止；累计4次成功外部检索或读取后强制触发边际收益停止条件；同时诊断精确重复、发现开销、通用问答过用与外部检索扇出",
+  "agentRuntimePolicy": {
+    "modelCallTimeoutSeconds": 150,
+    "modelCallTimeoutRetries": 1,
+    "externalSearchStopCalls": 4,
+    "externalSourceCategoryPlanning": "从题目语义识别厂商、论文/专利、维修资料类别；按缺口定向检索，低权威聚合域名不计入类别覆盖",
+    "equipmentEvidenceEarlyStop": {
+      "minimumUrls": 6,
+      "minimumIndependentDomains": 3,
+      "minimumSuccessfulSearchCalls": 2
+    },
+    "timeoutRetryScope": "仅重试当前模型步骤，不重新执行已完成工具",
+    "parallelToolCalls": false,
+    "parallelExternalOverflowGuard": "模型响应在工具执行前按剩余外部调用预算裁剪",
+    "externalBudgetFinalizationRecovery": "预算耗尽后若只生成过程性文字，将已取得来源压缩成不超过24000字符的证据包，并强制进行一次无工具最终答案生成；完整工具证据仍保留在实验记录中",
+    "h03SemanticRoute": "两次质量分解（缺陷类型、相关设备）+一次外部方法证据后停止"
+  },
+  "originalSourceAudit": {
+    "task": "E01",
+    "minimumFamilies": 3,
+    "policy": "按原始发布机构归并转载页面；不同域名转载同一原始机构只计一个来源族。"
+  },
+  "agentToolResultCompression": {
+    "version": 3,
+    "modelVisibleMaximumCharacters": 10000,
+    "modelVisibleCumulativeTargetCharacters": 24000,
+    "policy": "按单条上限和累计预算结构化压缩模型可见结果；SQL列表只保留摘要，完整原始结果保存在 ToolMessage artifact 中供证据审计。"
+  },
+  "blindPositionBalance": {
+    "version": 1,
+    "policy": "在整个运行范围内以确定性贪心分配A/B/C位置，使每个实验组的位置计数差不超过1。",
+    "auditFile": "blind_position_balance.json"
+  },
+  "taskContracts": {
+    "E01": {
+      "minAnswerChars": 300,
+      "minUrls": 3,
+      "minIndependentDomains": 3,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "产量",
+          "销量"
+        ],
+        [
+          "渗透率"
+        ],
+        [
+          "出口"
+        ],
+        [
+          "电池"
+        ],
+        [
+          "政策"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "E02": {
+      "minAnswerChars": 300,
+      "minUrls": 3,
+      "minIndependentDomains": 3,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "磷酸铁锂",
+          "LFP"
+        ],
+        [
+          "三元锂",
+          "NCM",
+          "NCA"
+        ],
+        [
+          "钠离子"
+        ],
+        [
+          "固态"
+        ],
+        [
+          "实验室"
+        ],
+        [
+          "中试"
+        ],
+        [
+          "装车"
+        ],
+        [
+          "量产"
+        ]
+      ],
+      "requireDateRange": false,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "E03": {
+      "minAnswerChars": 300,
+      "minUrls": 3,
+      "minIndependentDomains": 3,
+      "officialDomains": [
+        "europa.eu",
+        "eur-lex.europa.eu"
+      ],
+      "minOfficialUrls": 1,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "电池护照"
+        ],
+        [
+          "碳足迹"
+        ],
+        [
+          "尽职调查"
+        ],
+        [
+          "再生材料"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "E04": {
+      "minAnswerChars": 300,
+      "minUrls": 3,
+      "minIndependentDomains": 3,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "宣传",
+          "展示"
+        ],
+        [
+          "试验",
+          "试点"
+        ],
+        [
+          "小批量"
+        ],
+        [
+          "规模化"
+        ],
+        [
+          "商业回报",
+          "ROI"
+        ]
+      ],
+      "requireDateRange": false,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "E05": {
+      "minAnswerChars": 300,
+      "minUrls": 3,
+      "minIndependentDomains": 3,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "振动"
+        ],
+        [
+          "温度"
+        ],
+        [
+          "电流"
+        ],
+        [
+          "声学"
+        ],
+        [
+          "多模态"
+        ],
+        [
+          "标准"
+        ],
+        [
+          "论文"
+        ],
+        [
+          "厂商",
+          "制造商",
+          "OEM"
+        ]
+      ],
+      "requireDateRange": false,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "E06": {
+      "minAnswerChars": 300,
+      "minUrls": 3,
+      "minIndependentDomains": 3,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "安全停机",
+          "停机"
+        ],
+        [
+          "外观检查"
+        ],
+        [
+          "振动"
+        ],
+        [
+          "温度"
+        ],
+        [
+          "拆检"
+        ],
+        [
+          "专业人员",
+          "授权人员"
+        ]
+      ],
+      "requireDateRange": false,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [
+        "manufacturer",
+        "research",
+        "maintenance"
+      ],
+      "notes": []
+    },
+    "E07": {
+      "minAnswerChars": 300,
+      "minUrls": 3,
+      "minIndependentDomains": 3,
+      "officialDomains": [
+        "europa.eu"
+      ],
+      "minOfficialUrls": 1,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "已经生效",
+          "已生效",
+          "正式阶段"
+        ],
+        [
+          "未来",
+          "计划",
+          "提案"
+        ],
+        [
+          "钢铁"
+        ],
+        [
+          "铝"
+        ],
+        [
+          "汽车零部件"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "E08": {
+      "minAnswerChars": 300,
+      "minUrls": 2,
+      "minIndependentDomains": 2,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "OPC UA"
+        ],
+        [
+          "MQTT"
+        ],
+        [
+          "Sparkplug"
+        ],
+        [
+          "实时性"
+        ],
+        [
+          "语义"
+        ],
+        [
+          "安全"
+        ],
+        [
+          "成本"
+        ]
+      ],
+      "requireDateRange": false,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "I01": {
+      "minAnswerChars": 300,
+      "minUrls": 0,
+      "minIndependentDomains": 0,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 3,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "生产"
+        ],
+        [
+          "质量"
+        ],
+        [
+          "停机"
+        ],
+        [
+          "能耗"
+        ],
+        [
+          "维护"
+        ],
+        [
+          "风险分数",
+          "风险评分",
+          "risk_score",
+          "触发项"
+        ],
+        [
+          "可能原因",
+          "假设",
+          "候选原因"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": [
+        "综合风险分数为六项阈值触发数，每项1分；M03与M07并列第一，M08第三。"
+      ]
+    },
+    "I02": {
+      "minAnswerChars": 300,
+      "minUrls": 0,
+      "minIndependentDomains": 0,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [
+        "M03",
+        "M07"
+      ],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "月度",
+          "月份"
+        ],
+        [
+          "产量"
+        ],
+        [
+          "完成率"
+        ],
+        [
+          "报废率"
+        ],
+        [
+          "质量"
+        ],
+        [
+          "停机"
+        ],
+        [
+          "OEE"
+        ],
+        [
+          "单位产量能耗",
+          "单位良品能耗",
+          "单位能耗"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 3,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "I03": {
+      "minAnswerChars": 300,
+      "minUrls": 0,
+      "minIndependentDomains": 0,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 1,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "根因候选",
+          "候选原因"
+        ],
+        [
+          "支持证据",
+          "支持依据",
+          "正向证据",
+          "关键数据",
+          "支持 vs 反对",
+          "支持/反对",
+          "逐项证据评估"
+        ],
+        [
+          "反对证据",
+          "不支持证据",
+          "反对依据",
+          "局限"
+        ],
+        [
+          "质量缺陷",
+          "缺陷"
+        ],
+        [
+          "停机原因",
+          "停机"
+        ],
+        [
+          "生产节拍",
+          "节拍"
+        ],
+        [
+          "设备状态",
+          "设备侧",
+          "设备运行",
+          "可用率",
+          "OEE",
+          "故障"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "I04": {
+      "minAnswerChars": 300,
+      "minUrls": 0,
+      "minIndependentDomains": 0,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 1,
+      "requiredTermGroups": [
+        [
+          "供应商质量",
+          "来料质量",
+          "检验"
+        ],
+        [
+          "交付"
+        ],
+        [
+          "库存"
+        ],
+        [
+          "缺料",
+          "短缺",
+          "覆盖天数"
+        ],
+        [
+          "优先",
+          "排序"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "I05": {
+      "minAnswerChars": 300,
+      "minUrls": 0,
+      "minIndependentDomains": 0,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 8,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "月度",
+          "月份"
+        ],
+        [
+          "能耗",
+          "kWh"
+        ],
+        [
+          "峰值功率",
+          "kW"
+        ],
+        [
+          "运行时间"
+        ],
+        [
+          "产量"
+        ],
+        [
+          "良品",
+          "合格品"
+        ],
+        [
+          "单位合格品能耗",
+          "单位良品能耗",
+          "kWh/件"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 6,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "I06": {
+      "minAnswerChars": 300,
+      "minUrls": 0,
+      "minIndependentDomains": 0,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 1,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "产量"
+        ],
+        [
+          "报废"
+        ],
+        [
+          "质量缺陷",
+          "缺陷"
+        ],
+        [
+          "库存"
+        ],
+        [
+          "设备依赖",
+          "相关设备"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "I07": {
+      "minAnswerChars": 300,
+      "minUrls": 0,
+      "minIndependentDomains": 0,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "规则异常"
+        ],
+        [
+          "统计异常"
+        ],
+        [
+          "趋势异常"
+        ],
+        [
+          "共同异常",
+          "共同领域",
+          "三方法共同",
+          "三者共同",
+          "唯一交集"
+        ],
+        [
+          "独有异常",
+          "独有发现",
+          "独有领域",
+          "规则法独有",
+          "规则独有",
+          "统计法独有",
+          "统计独有",
+          "趋势法独有",
+          "趋势独有",
+          "仅规则",
+          "方法差集",
+          "差集"
+        ],
+        [
+          "时间序列",
+          "环比",
+          "趋势"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 3,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "I08": {
+      "minAnswerChars": 300,
+      "minUrls": 0,
+      "minIndependentDomains": 0,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05",
+        "M06",
+        "M07",
+        "M08"
+      ],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "实际产量"
+        ],
+        [
+          "合格数量",
+          "良品数量"
+        ],
+        [
+          "报废数量"
+        ],
+        [
+          "报废率"
+        ],
+        [
+          "指标定义"
+        ],
+        [
+          "来源表"
+        ],
+        [
+          "筛选条件"
+        ],
+        [
+          "数据质量"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [
+        ".png",
+        ".md"
+      ],
+      "requireVerifiedArtifacts": true,
+      "requireInternalExternalLabels": false,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "H01": {
+      "minAnswerChars": 300,
+      "minUrls": 3,
+      "minIndependentDomains": 3,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 1,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "内部证据"
+        ],
+        [
+          "外部证据"
+        ],
+        [
+          "验证步骤",
+          "排查步骤"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": true,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "H02": {
+      "minAnswerChars": 300,
+      "minUrls": 2,
+      "minIndependentDomains": 2,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [
+        "M07"
+      ],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "根因候选",
+          "候选原因"
+        ],
+        [
+          "排查清单",
+          "排查步骤"
+        ],
+        [
+          "内部数据",
+          "内部证据"
+        ],
+        [
+          "外部资料",
+          "外部证据"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": true,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "H03": {
+      "minAnswerChars": 300,
+      "minUrls": 2,
+      "minIndependentDomains": 2,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 1,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "缺陷类型"
+        ],
+        [
+          "短期遏制"
+        ],
+        [
+          "原因验证"
+        ],
+        [
+          "长期改善",
+          "长期纠正措施",
+          "永久纠正措施",
+          "防止再发",
+          "D5",
+          "D6",
+          "D7"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": true,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "H04": {
+      "minAnswerChars": 300,
+      "minUrls": 1,
+      "minIndependentDomains": 1,
+      "officialDomains": [
+        "iso.org"
+      ],
+      "minOfficialUrls": 1,
+      "requiredEntities": [],
+      "minMachineIds": 1,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "能源效率",
+          "单位良品能耗",
+          "单位能耗"
+        ],
+        [
+          "ISO 50001"
+        ],
+        [
+          "传感器",
+          "测量"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": true,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "H05": {
+      "minAnswerChars": 300,
+      "minUrls": 2,
+      "minIndependentDomains": 2,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 1,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "传感器"
+        ],
+        [
+          "采样指标",
+          "采样"
+        ],
+        [
+          "报警逻辑",
+          "报警"
+        ],
+        [
+          "验证方法",
+          "验证"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": true,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "H06": {
+      "minAnswerChars": 300,
+      "minUrls": 2,
+      "minIndependentDomains": 2,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 1,
+      "requiredTermGroups": [
+        [
+          "收货"
+        ],
+        [
+          "来料质量",
+          "检验"
+        ],
+        [
+          "交付"
+        ],
+        [
+          "供应品类",
+          "物料类别",
+          "品类"
+        ],
+        [
+          "审核重点",
+          "供应商审核"
+        ],
+        [
+          "备选措施",
+          "替代措施"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": true,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "H07": {
+      "minAnswerChars": 300,
+      "minUrls": 2,
+      "minIndependentDomains": 2,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "覆盖天数"
+        ],
+        [
+          "无消耗",
+          "积压"
+        ],
+        [
+          "供应商依赖"
+        ],
+        [
+          "内部已经证实",
+          "内部证据"
+        ],
+        [
+          "潜在风险",
+          "外部环境"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": true,
+      "requiredSourceCategories": [],
+      "notes": []
+    },
+    "H08": {
+      "minAnswerChars": 300,
+      "minUrls": 3,
+      "minIndependentDomains": 3,
+      "officialDomains": [],
+      "minOfficialUrls": 0,
+      "requiredEntities": [],
+      "minMachineIds": 0,
+      "minProductIds": 0,
+      "minSupplierIds": 0,
+      "requiredTermGroups": [
+        [
+          "生产"
+        ],
+        [
+          "质量"
+        ],
+        [
+          "设备"
+        ],
+        [
+          "能耗"
+        ],
+        [
+          "供应商"
+        ],
+        [
+          "库存"
+        ],
+        [
+          "新能源汽车"
+        ],
+        [
+          "智能制造"
+        ],
+        [
+          "机会"
+        ],
+        [
+          "风险"
+        ]
+      ],
+      "requireDateRange": true,
+      "minTimePoints": 0,
+      "requiredArtifactExtensions": [],
+      "requireVerifiedArtifacts": false,
+      "requireInternalExternalLabels": true,
+      "requiredSourceCategories": [],
+      "notes": []
+    }
+  },
+  "agentUsesSafeAllowlist": true,
+  "agentToolPolicy": "internal任务不暴露外部检索工具；external/hybrid任务保留外部检索；H03按验收语义限定为质量分解与外部方法证据，其余题目仍由智能体自主选择和规划",
+  "executionSuccessDefinition": "模型与工具流程完成且没有未捕获异常",
+  "taskCompletionDefinition": "最终交付通过对应题目的机器可检查验收契约；不规定工具选择或分析路径",
+  "evidenceDefinition": "外部/混合任务达到来源数量、独立域名、官方来源及内外部区分要求",
+  "evidenceAuditDefinition": "保存脱敏工具证据；分别检查外部声明URL绑定、内部声明来源表/查询摘要绑定和内部查询血缘",
+  "degradedDefinition": "至少一次工具调用返回错误",
+  "externalSearchParameterRule": "中文检索使用 language=zh-cn；country 仅与 topic=general 组合；topic=news 必须省略 country；供应商特有参数由MCP适配器转换",
+  "externalSearchProvider": "baidu",
+  "apiKeysRecorded": false
+}

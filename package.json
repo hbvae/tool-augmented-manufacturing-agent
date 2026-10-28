@@ -1,0 +1,20 @@
+{
+  "name": "manufacturing-data-mcp-server",
+  "version": "2.14.4",
+  "private": true,
+  "type": "module",
+  "description": "Read-only MCP server for manufacturing analytics data",
+  "scripts": {
+    "start": "node src/server.mjs",
+    "test": "node --test test/db.test.mjs test/production.test.mjs test/quality.test.mjs test/equipment.test.mjs test/energy.test.mjs test/supplier.test.mjs test/inventory.test.mjs test/domain_reliability.test.mjs test/cross_domain.test.mjs test/anomaly.test.mjs test/natural_language.test.mjs test/security.test.mjs test/advanced_analysis.test.mjs test/external_search.test.mjs test/external_content.test.mjs test/embedding.test.mjs test/aio_sandbox.test.mjs test/sandbox_dataset.test.mjs test/sandbox_analysis.test.mjs test/sandbox_report.test.mjs test/sandbox_workflow.test.mjs test/sandbox_natural_language.test.mjs && node test/mcp.integration.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.0",
+    "@modelcontextprotocol/client": "^2.0.0",
+    "@modelcontextprotocol/server": "^2.0.0",
+    "zod": "^4.0.0"
+  }
+}

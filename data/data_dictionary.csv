@@ -1,0 +1,101 @@
+table_name,field_name,data_type,primary_key,example_value,description_zh
+products,product_id,TEXT,YES,P001,产品主键
+products,product_name,TEXT,NO,Pump Housing A,product name
+products,category,TEXT,NO,Machined Part,category
+products,material_grade,TEXT,NO,HT250,material grade
+products,standard_cycle_min,REAL,NO,2.8,standard cycle min
+products,unit_price_cny,INTEGER,NO,480,unit price cny
+products,target_scrap_rate,REAL,NO,0.018,target scrap rate
+machines,machine_id,TEXT,YES,M01,设备主键
+machines,line_id,TEXT,NO,L1,line id
+machines,machine_type,TEXT,NO,CNC Lathe,machine type
+machines,manufacturer,TEXT,NO,Mazak,manufacturer
+machines,install_date,TEXT,NO,2019-04-12,install date
+machines,rated_power_kw,INTEGER,NO,22,rated power kw
+machines,status,TEXT,NO,ACTIVE,status
+suppliers,supplier_id,TEXT,YES,S001,供应商主键
+suppliers,supplier_name,TEXT,NO,Huadong Metals,supplier name
+suppliers,region,TEXT,NO,Shanghai,region
+suppliers,material_type,TEXT,NO,Steel Bar,material type
+suppliers,supplier_rating,TEXT,NO,A,supplier rating
+suppliers,contract_lead_time_days,INTEGER,NO,7,contract lead time days
+materials,material_id,TEXT,YES,RM001,物料主键
+materials,material_name,TEXT,NO,HT250 Casting,material name
+materials,uom,TEXT,NO,kg,uom
+materials,preferred_supplier_id,TEXT,NO,S002,preferred supplier id
+materials,standard_cost_cny,REAL,NO,8.4,standard cost cny
+production_orders,order_id,TEXT,YES,WO00001,生产工单主键
+production_orders,product_id,TEXT,NO,P001,产品主键
+production_orders,machine_id,TEXT,NO,M01,设备主键
+production_orders,line_id,TEXT,NO,L1,line id
+production_orders,shift,TEXT,NO,A,shift
+production_orders,planned_start,TEXT,NO,2026-01-01T08:08:00,planned start
+production_orders,actual_start,TEXT,NO,2026-01-01T08:28:00,actual start
+production_orders,planned_qty,INTEGER,NO,151,计划生产数量
+production_orders,actual_qty,INTEGER,NO,146,实际产出数量
+production_orders,good_qty,INTEGER,NO,144,合格数量
+production_orders,scrap_qty,INTEGER,NO,2,报废数量
+production_orders,cycle_time_min,REAL,NO,3.037,cycle time min
+production_orders,runtime_min,INTEGER,NO,443,runtime min
+production_orders,operator_team,TEXT,NO,TEAM-A,operator team
+production_orders,status,TEXT,NO,COMPLETED,status
+quality_inspections,inspection_id,TEXT,YES,QI000001,检验记录主键
+quality_inspections,order_id,TEXT,NO,WO00001,生产工单主键
+quality_inspections,inspection_time,TEXT,NO,2026-01-01T08:33:00,inspection time
+quality_inspections,inspection_stage,TEXT,NO,FIRST_ARTICLE,inspection stage
+quality_inspections,sample_size,INTEGER,NO,5,sample size
+quality_inspections,defect_count,INTEGER,NO,0,defect count
+quality_inspections,defect_type,TEXT,NO,NONE,defect type
+quality_inspections,measured_value_mm,REAL,NO,50.03,measured value mm
+quality_inspections,spec_lower_mm,REAL,NO,49.95,spec lower mm
+quality_inspections,spec_upper_mm,REAL,NO,50.05,spec upper mm
+quality_inspections,result,TEXT,NO,PASS,检验结果枚举
+quality_inspections,inspector_id,TEXT,NO,INS-02,inspector id
+downtime_events,downtime_id,TEXT,YES,DT00001,停机事件主键
+downtime_events,machine_id,TEXT,NO,M03,设备主键
+downtime_events,order_id,TEXT,NO,,生产工单主键
+downtime_events,start_time,TEXT,NO,2026-04-01T07:00:00,start time
+downtime_events,end_time,TEXT,NO,2026-04-01T09:10:00,end time
+downtime_events,duration_min,INTEGER,NO,130,停机分钟数
+downtime_events,category,TEXT,NO,FAILURE,category
+downtime_events,reason,TEXT,NO,Servo Fault,reason
+downtime_events,planned_flag,INTEGER,NO,0,planned flag
+downtime_events,severity,TEXT,NO,HIGH,severity
+energy_readings,reading_id,TEXT,YES,EN000001,能耗读数主键
+energy_readings,reading_date,TEXT,NO,2026-01-01,reading date
+energy_readings,machine_id,TEXT,NO,M01,设备主键
+energy_readings,runtime_hours,REAL,NO,7.38,runtime hours
+energy_readings,electricity_kwh,REAL,NO,136.94,用电量，千瓦时
+energy_readings,compressed_air_m3,REAL,NO,44.89,compressed air m3
+energy_readings,coolant_liter,REAL,NO,0.64,coolant liter
+energy_readings,peak_demand_kw,REAL,NO,17.09,peak demand kw
+supplier_receipts,receipt_id,TEXT,YES,RC00001,收料记录主键
+supplier_receipts,supplier_id,TEXT,NO,S004,供应商主键
+supplier_receipts,material_id,TEXT,NO,RM001,物料主键
+supplier_receipts,supplier_lot_id,TEXT,NO,LOT-S004-0001,supplier lot id
+supplier_receipts,receipt_date,TEXT,NO,2026-01-01,receipt date
+supplier_receipts,received_qty,INTEGER,NO,3006,received qty
+supplier_receipts,unit_cost_cny,REAL,NO,8.82,unit cost cny
+supplier_receipts,actual_lead_time_days,INTEGER,NO,16,actual lead time days
+supplier_receipts,incoming_defect_qty,INTEGER,NO,3,incoming defect qty
+supplier_receipts,inspection_result,TEXT,NO,PASS,来料检验结果
+inventory_transactions,transaction_id,TEXT,YES,TX000001,库存事务主键
+inventory_transactions,transaction_time,TEXT,NO,2026-01-01T09:00:00,transaction time
+inventory_transactions,item_type,TEXT,NO,RAW_MATERIAL,item type
+inventory_transactions,item_id,TEXT,NO,RM001,item id
+inventory_transactions,transaction_type,TEXT,NO,RECEIPT,transaction type
+inventory_transactions,quantity,REAL,NO,3006,带符号库存变动量
+inventory_transactions,warehouse_id,TEXT,NO,WH-RM,warehouse id
+inventory_transactions,reference_id,TEXT,NO,RC00001,reference id
+inventory_transactions,unit_cost_cny,REAL,NO,8.82,unit cost cny
+data_quality_cases,case_id,TEXT,YES,DQ001,case id
+data_quality_cases,case_type,TEXT,NO,MISSING_REQUIRED,case type
+data_quality_cases,target_table,TEXT,NO,production_orders,target table
+data_quality_cases,target_field,TEXT,NO,machine_id,target field
+data_quality_cases,test_value,TEXT,NO,,test value
+data_quality_cases,expected_behavior,TEXT,NO,Reject or return validation error,expected behavior
+relationships,source_table,TEXT,NO,production_orders,source table
+relationships,source_field,TEXT,NO,product_id,source field
+relationships,target_table,TEXT,NO,products,target table
+relationships,target_field,TEXT,NO,product_id,target field
+relationships,relationship,TEXT,NO,many-to-one,relationship

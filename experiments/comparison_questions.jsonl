@@ -1,0 +1,24 @@
+{"taskId":"E01","category":"external","title":"新能源汽车现状与趋势","qualitative":true,"question":"调研截至实验执行日中国新能源汽车的发展现状和未来2—3年趋势。至少分析产销量、市场渗透率、出口、动力电池技术和主要政策变化。核对至少3个独立来源，说明不同来源统计口径和可能存在的冲突，并附链接。"}
+{"taskId":"E02","category":"external","title":"动力电池技术路线","qualitative":false,"question":"调研当前磷酸铁锂、三元锂、钠离子电池和固态电池的产业化进展。区分实验室成果、中试、装车验证和规模量产，比较能量密度、成本、安全性和供应链风险，至少引用3个可靠来源。"}
+{"taskId":"E03","category":"external","title":"欧盟电池法规","qualitative":false,"question":"调研欧盟电池法规中电池护照、碳足迹、供应链尽职调查和再生材料比例的最新实施时间表，分析它们对中国动力电池和汽车零部件企业的影响。必须核对法规原文或欧盟官方资料与至少两个行业来源。"}
+{"taskId":"E04","category":"external","title":"人形机器人制造业应用","qualitative":false,"question":"调研人形机器人在汽车和电子制造工厂中的最新应用现状。至少选择3个公开案例，区分宣传展示、现场试验、小批量部署和规模化应用，并判断目前是否已经具备明确的商业回报。"}
+{"taskId":"E05","category":"external","title":"预测性维护技术","qualitative":false,"question":"调研当前制造业预测性维护的主流技术路线，比较振动、温度、电流、声学和多模态方法。说明哪些方案已经成熟应用，哪些仍有较高实施门槛，并结合标准、论文或设备厂商资料进行多来源核对。"}
+{"taskId":"E06","category":"external","title":"主轴异常噪声排查","qualitative":true,"question":"调研数控机床主轴出现异常噪声时的可靠排查方法。至少使用设备厂商资料、专利或论文、维修技术资料三类来源，形成按安全停机、外观检查、振动分析、温度检查和拆检决策排列的步骤，并指出哪些操作必须由专业人员完成。"}
+{"taskId":"E07","category":"external","title":"欧盟CBAM影响","qualitative":false,"question":"调研欧盟碳边境调节机制的最新实施状态，分析它对中国钢铁、铝材及汽车零部件制造企业的直接和间接影响。区分已经生效的要求与未来计划，附官方来源并核对至少两个行业解读。"}
+{"taskId":"E08","category":"external","title":"工业通信方案选型","qualitative":false,"question":"比较OPC UA、MQTT和MQTT Sparkplug在制造业设备数据采集中的适用场景。结合当前标准和工业实践，从实时性、语义建模、边缘部署、安全性和系统集成成本进行比较，最后给出不同工厂规模下的选型建议。"}
+{"taskId":"I01","category":"internal","title":"设备综合风险排名","qualitative":false,"question":"综合生产、质量、停机、能耗和维护数据，找出当前风险最高的3台设备。说明每台设备的主要风险指标、数据时间范围、证据来源和可能原因，不得仅根据单个指标排名。"}
+{"taskId":"I02","category":"internal","title":"M03与M07综合对比","qualitative":true,"question":"比较M03和M07设备的月度产量、完成率、报废率、质量失败、停机时间、OEE和单位产量能耗，指出它们的异常月份以及最值得优先调查的问题。"}
+{"taskId":"I03","category":"internal","title":"报废根因候选","qualitative":false,"question":"找出报废率最高的设备，并联合质量缺陷、停机原因、生产节拍和设备状态生成根因候选排序。说明每个候选原因的支持证据和反对证据，不得把相关性直接表述为因果关系。"}
+{"taskId":"I04","category":"internal","title":"供应商与库存联动","qualitative":false,"question":"分析供应商质量、交付及时率、来料检验结果和相关物料库存状态，识别可能同时造成质量风险和缺料风险的供应商，并给出优先处置顺序。"}
+{"taskId":"I05","category":"internal","title":"能耗与生产效率","qualitative":false,"question":"分析各设备的月度能耗、峰值功率、运行时间、产量和良品数量，计算并比较单位合格品能耗，识别高能耗但低产出的设备和月份。"}
+{"taskId":"I06","category":"internal","title":"产品360分析","qualitative":false,"question":"综合生产、质量、库存和相关设备数据，找出综合风险最高的产品。说明其产量、报废、质量缺陷、库存和设备依赖情况。"}
+{"taskId":"I07","category":"internal","title":"多种异常检测比较","qualitative":false,"question":"分别使用规则异常、统计异常和趋势异常检测生产、质量、设备与能耗数据。比较三种方法发现的共同异常和独有异常，并解释方法差异。"}
+{"taskId":"I08","category":"internal","title":"沙箱报告生成","qualitative":false,"question":"按设备汇总实际产量、合格数量和报废数量，计算报废率，生成柱状图和Markdown分析报告。报告必须包含数据范围、指标定义、来源表、筛选条件和数据质量提示。"}
+{"taskId":"H01","category":"hybrid","title":"高风险设备外部诊断","qualitative":true,"question":"先根据内部生产、质量、停机和维护数据找出风险最高的设备，再根据其主要异常现象检索外部诊断资料。至少核对3个外部来源，给出内部证据、外部证据和建议验证步骤。"}
+{"taskId":"H02","category":"hybrid","title":"M07异常综合分析","qualitative":false,"question":"分析M07设备的报废、质量失败、异常噪声或停机问题，再检索数控机床相关故障诊断资料，形成根因候选排序和现场排查清单。明确哪些结论来自内部数据，哪些来自外部资料。"}
+{"taskId":"H03","category":"hybrid","title":"质量问题与改进方法","qualitative":false,"question":"找出内部数据中最严重的质量缺陷类型和相关设备，再检索可靠的过程质量改进方法或行业标准，为该问题设计短期遏制、原因验证和长期改善方案。"}
+{"taskId":"H04","category":"hybrid","title":"能源管理改进","qualitative":false,"question":"根据内部能耗和产量数据找出能源效率最低的设备或月份，再结合ISO 50001或权威能源管理资料提出改善方案。说明哪些建议可以由当前数据支持，哪些需要增加传感器或测量。"}
+{"taskId":"H05","category":"hybrid","title":"预测性维护方案","qualitative":false,"question":"使用内部设备、停机、故障和能耗数据筛选维护风险最高的设备，再检索适合该设备异常特征的监测技术，设计一个包含传感器、采样指标、报警逻辑和验证方法的预测性维护试点。"}
+{"taskId":"H06","category":"hybrid","title":"供应商风险调查","qualitative":false,"question":"先根据内部收货、来料质量和交付数据识别风险最高的供应商，再检索该供应品类当前的行业供应风险和质量控制方法，形成供应商审核重点和备选措施。"}
+{"taskId":"H07","category":"hybrid","title":"库存与外部供应风险","qualitative":false,"question":"识别内部库存中覆盖天数不足、无消耗积压或供应商依赖较高的物料，再检索相关行业的最新供应链风险。区分内部已经证实的风险与外部环境带来的潜在风险。"}
+{"taskId":"H08","category":"hybrid","title":"管理层综合报告","qualitative":false,"question":"生成一份管理层报告：先总结内部生产、质量、设备、能耗、供应商和库存的主要风险，再检索当前新能源汽车与智能制造行业趋势，分析外部变化可能对工厂带来的机会和风险。所有外部判断必须附来源。"}

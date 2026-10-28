@@ -1,0 +1,11 @@
+material_id,material_name,uom,preferred_supplier_id,standard_cost_cny
+RM001,HT250 Casting,kg,S002,8.4
+RM002,QT450 Casting,kg,S004,9.1
+RM003,40Cr Bar,kg,S001,7.8
+RM004,42CrMo Bar,kg,S001,11.6
+RM005,304 Casting,kg,S003,22.5
+RM006,316L Casting,kg,S003,31.8
+RM007,20CrMnTi Bar,kg,S001,9.7
+RM008,Q235B Sheet,kg,S001,5.4
+RM009,M8 Fastener,piece,S005,0.42
+RM010,Cutting Coolant,liter,S006,18.5

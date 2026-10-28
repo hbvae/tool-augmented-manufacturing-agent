@@ -1,0 +1,9 @@
+product_id,product_name,category,material_grade,standard_cycle_min,unit_price_cny,target_scrap_rate
+P001,Pump Housing A,Machined Part,HT250,2.8,480,0.018
+P002,Pump Housing B,Machined Part,QT450,3.4,620,0.02
+P003,Drive Shaft S,Shaft,40Cr,2.2,360,0.012
+P004,Drive Shaft L,Shaft,42CrMo,3.1,510,0.014
+P005,Valve Body DN50,Valve,304,4.5,880,0.022
+P006,Valve Body DN80,Valve,316L,5.2,1180,0.025
+P007,Gear Blank G1,Gear,20CrMnTi,2.6,430,0.016
+P008,Mounting Bracket,Fabricated Part,Q235B,1.5,160,0.01

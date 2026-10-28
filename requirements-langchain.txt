@@ -1,0 +1,4 @@
+langchain[mcp]>=1.4,<1.5
+langchain-openai>=1.0,<2
+python-dotenv>=1.1,<2
+streamlit>=1.50,<2

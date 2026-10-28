@@ -1,0 +1,13 @@
+case_id,case_type,target_table,target_field,test_value,expected_behavior
+DQ001,MISSING_REQUIRED,production_orders,machine_id,,Reject or return validation error
+DQ002,DUPLICATE_KEY,production_orders,order_id,WO00001,Detect duplicate primary key
+DQ003,NEGATIVE_QUANTITY,production_orders,planned_qty,-50,Reject negative planned quantity
+DQ004,UNKNOWN_FOREIGN_KEY,quality_inspections,order_id,WO99999,Report unresolved foreign key
+DQ005,OUTLIER,energy_readings,electricity_kwh,999999,Flag statistical outlier
+DQ006,INVALID_DATE,supplier_receipts,receipt_date,2026-02-30,Reject invalid calendar date
+DQ007,WHITESPACE_KEY,machines,machine_id, M03 ,Trim then validate uniqueness
+DQ008,CASE_VARIANT,suppliers,supplier_id,s004,Apply documented case policy
+DQ009,ZERO_DENOMINATOR,production_orders,actual_qty,0,Avoid divide-by-zero in scrap rate
+DQ010,END_BEFORE_START,downtime_events,end_time,2026-03-01T08:00:00,Reject when end is before start
+DQ011,UNSUPPORTED_ENUM,quality_inspections,result,UNKNOWN,Reject value outside enum
+DQ012,DECIMAL_COUNT,quality_inspections,defect_count,1.5,Reject non-integer count

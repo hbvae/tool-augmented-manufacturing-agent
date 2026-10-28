@@ -1,0 +1,16 @@
+category,metric,closed_book_baseline,fixed_context_baseline,tool_augmented_agent,unit
+subjective,task_completion,1.931,3.542,4.889,score_1_to_5
+subjective,accuracy,2.403,3.375,4.028,score_1_to_5
+subjective,traceability,1.042,3.944,4.569,score_1_to_5
+subjective,analysis_depth,2.875,3.694,4.861,score_1_to_5
+subjective,actionability,2.958,3.500,4.556,score_1_to_5
+subjective,uncertainty_handling,3.819,4.847,4.667,score_1_to_5
+subjective,overall_satisfaction,1.792,3.431,4.819,score_1_to_5
+composite,weighted_score,2.210,3.665,4.561,score_1_to_5
+objective,task_complete_rate,33.3,70.8,91.7,percent
+objective,machine_verifiable_pass_rate,57.3,92.9,98.8,percent
+objective,strict_objective_acceptance_rate,0.0,62.5,84.7,percent
+objective,evidence_audit_pass_rate,37.5,94.4,94.4,percent
+objective,blind_preference_rate,0.0,5.6,94.4,percent
+efficiency,mean_elapsed_time,10.02,20.49,36.01,seconds
+

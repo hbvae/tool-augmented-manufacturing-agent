@@ -1,0 +1,7 @@
+supplier_id,supplier_name,region,material_type,supplier_rating,contract_lead_time_days
+S001,Huadong Metals,Shanghai,Steel Bar,A,7
+S002,Jiangsu Castings,Jiangsu,Casting,A,12
+S003,Precision Alloy,Zhejiang,Stainless Steel,B,10
+S004,North Foundry,Hebei,Casting,B,15
+S005,FastenPro,Guangdong,Fastener,A,5
+S006,Industrial Fluids,Shandong,Coolant,A,6

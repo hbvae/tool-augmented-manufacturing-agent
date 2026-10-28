@@ -1,0 +1,9 @@
+machine_id,line_id,machine_type,manufacturer,install_date,rated_power_kw,status
+M01,L1,CNC Lathe,Mazak,2019-04-12,22,ACTIVE
+M02,L1,CNC Lathe,DMG MORI,2020-06-18,24,ACTIVE
+M03,L1,Machining Center,Haas,2018-11-06,30,ACTIVE
+M04,L2,Machining Center,Makino,2021-03-25,35,ACTIVE
+M05,L2,Drilling Center,Brother,2022-08-09,18,ACTIVE
+M06,L2,Grinding Machine,Okamoto,2017-02-14,16,ACTIVE
+M07,L3,CNC Lathe,Haas,2016-09-30,26,ACTIVE
+M08,L3,Laser Cutter,Trumpf,2023-05-20,40,ACTIVE

@@ -1,0 +1,80 @@
+{
+  "dataset_name": "manufacturing_mcp_demo",
+  "version": "1.0.0",
+  "generated_at": "2026-09-20T00:00:00+08:00",
+  "synthetic_data": true,
+  "date_range": {
+    "start": "2026-01-01",
+    "end": "2026-06-29"
+  },
+  "encoding": "UTF-8",
+  "random_seed": 20260920,
+  "tables": {
+    "products": {
+      "file": "products.csv",
+      "rows": 8,
+      "primary_key": "product_id"
+    },
+    "machines": {
+      "file": "machines.csv",
+      "rows": 8,
+      "primary_key": "machine_id"
+    },
+    "suppliers": {
+      "file": "suppliers.csv",
+      "rows": 6,
+      "primary_key": "supplier_id"
+    },
+    "materials": {
+      "file": "materials.csv",
+      "rows": 10,
+      "primary_key": "material_id"
+    },
+    "production_orders": {
+      "file": "production_orders.csv",
+      "rows": 360,
+      "primary_key": "order_id"
+    },
+    "quality_inspections": {
+      "file": "quality_inspections.csv",
+      "rows": 720,
+      "primary_key": "inspection_id"
+    },
+    "downtime_events": {
+      "file": "downtime_events.csv",
+      "rows": 190,
+      "primary_key": "downtime_id"
+    },
+    "energy_readings": {
+      "file": "energy_readings.csv",
+      "rows": 1440,
+      "primary_key": "reading_id"
+    },
+    "supplier_receipts": {
+      "file": "supplier_receipts.csv",
+      "rows": 240,
+      "primary_key": "receipt_id"
+    },
+    "inventory_transactions": {
+      "file": "inventory_transactions.csv",
+      "rows": 1320,
+      "primary_key": "transaction_id"
+    },
+    "data_quality_cases": {
+      "file": "data_quality_cases.csv",
+      "rows": 12,
+      "primary_key": "case_id"
+    },
+    "relationships": {
+      "file": "relationships.csv",
+      "rows": 9,
+      "primary_key": null
+    }
+  },
+  "designed_patterns": [
+    "M03 has elevated unplanned downtime and energy intensity in April 2026.",
+    "M07 on shift B has a higher scrap and inspection failure rate.",
+    "S004 receipts in March-April 2026 have elevated incoming defects and lead time.",
+    "data_quality_cases.csv contains isolated invalid records for validation testing only."
+  ]
+}

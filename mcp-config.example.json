@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "manufacturing-data": {
+      "command": "C:\\Users\\ZHAO\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+      "args": [
+        "C:\\Users\\ZHAO\\Desktop\\paper\\manufacturing_mcp_server\\src\\server.mjs"
+      ],
+      "env": {
+        "MANUFACTURING_DB": "C:\\Users\\ZHAO\\Desktop\\paper\\manufacturing_data\\manufacturing_demo.db",
+        "MANUFACTURING_EXTERNAL_SEARCH_PROVIDER": "baidu",
+        "MANUFACTURING_EXTERNAL_CONTENT_PROVIDER": "search_snippet",
+        "BAIDU_AI_SEARCH_API_KEY": "替换为你的百度AI搜索API Key",
+        "TAVILY_API_KEY": "可选；仅在使用tavily或baidu_fallback时填写",
+        "MANUFACTURING_EXTERNAL_SEARCH_TIMEOUT_MS": "12000",
+        "MANUFACTURING_EXTERNAL_SEARCH_CACHE_TTL_MS": "300000",
+        "MANUFACTURING_EXTERNAL_EXTRACT_TIMEOUT_MS": "30000",
+        "MANUFACTURING_EXTERNAL_CONTENT_CACHE_TTL_MS": "1800000",
+        "MANUFACTURING_EMBEDDING_ENABLED": "true",
+        "MANUFACTURING_EMBEDDING_MODEL": "onnx-community/bge-small-zh-v1.5-ONNX",
+        "MANUFACTURING_EMBEDDING_DTYPE": "q8",
+        "MANUFACTURING_EMBEDDING_CACHE_ENABLED": "true",
+        "MANUFACTURING_AIO_BASE_URL": "http://127.0.0.1:8080",
+        "MANUFACTURING_AIO_API_KEY": "替换为你设置的AIO沙箱密钥",
+        "MANUFACTURING_AIO_WORKSPACE": "/home/gem/workspace",
+        "MANUFACTURING_AIO_REQUEST_TIMEOUT_MS": "35000"
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+source_table,source_field,target_table,target_field,relationship
+production_orders,product_id,products,product_id,many-to-one
+production_orders,machine_id,machines,machine_id,many-to-one
+quality_inspections,order_id,production_orders,order_id,many-to-one
+downtime_events,machine_id,machines,machine_id,many-to-one
+downtime_events,order_id,production_orders,order_id,optional many-to-one
+energy_readings,machine_id,machines,machine_id,many-to-one
+supplier_receipts,supplier_id,suppliers,supplier_id,many-to-one
+supplier_receipts,material_id,materials,material_id,many-to-one
+inventory_transactions,reference_id,production_orders/receipts,order_id/receipt_id,polymorphic reference
