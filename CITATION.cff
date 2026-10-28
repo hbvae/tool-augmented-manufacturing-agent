@@ -7,7 +7,7 @@ authors:
 version: 1.0.0
 date-released: 2026-10-28
 license: MIT
-repository-code: "https://github.com/OWNER/tool-augmented-manufacturing-agent"
+repository-code: "https://github.com/hbvae/tool-augmented-manufacturing-agent"
 keywords:
   - large language model
   - manufacturing agent
